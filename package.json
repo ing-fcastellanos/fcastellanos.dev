@@ -1,0 +1,19 @@
+{
+  "name": "resumehtml",
+  "version": "1.0.0",
+  "description": "CV Page",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fcastellanosKreios/ResumeHTML.git"
+  },
+  "author": "Francisco Castellanos",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fcastellanosKreios/ResumeHTML/issues"
+  },
+  "homepage": "https://github.com/fcastellanosKreios/ResumeHTML#readme"
+}

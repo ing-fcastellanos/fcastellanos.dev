@@ -221,45 +221,80 @@
 
 		/* submit via ajax */
 		submitHandler: function(form) {
-
+ 
 			var sLoader = $('#submit-loader');
+			var array = $(form).serializeArray();
 
-			$.ajax({      	
+			console.log(array);
 
-		      type: "POST",
-		      url: "inc/sendEmail.php",
-		      data: $(form).serialize(),
-		      beforeSend: function() { 
+			// Set Subject
 
-		      	sLoader.fadeIn(); 
+			var subject = 'Contact Form Submission';
+			if (array[2].value != '') {subject = array[2].value; } 
+			console.log(subject);
 
-		      },
-		      success: function(msg) {
+			  // Set Message
+			var message = "Email from: " +array[0].value+ "<br />";
+			message += "Email address: " +array[1].value+ "<br />";
+			message += "Message: <br />";
+			message += array[3].value;
+			message += "<br /> ----- <br /> This email was sent from your site's contact form. <br />";
+			console.log(message);
 
-	            // Message was sent
-	            if (msg == 'OK') {
-	            	sLoader.fadeOut(); 
-	               $('#message-warning').hide();
-	               $('#contactForm').fadeOut();
-	               $('#message-success').fadeIn();   
-	            }
-	            // There was an error
-	            else {
-	            	sLoader.fadeOut(); 
-	               $('#message-warning').html(msg);
-		            $('#message-warning').fadeIn();
-	            }
+			sLoader.fadeIn(); 
+			Email.send({ 
+				Host: "smtp.sendgrid.net", 
+				Username: "apikey", 
+				Password: "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", 
+				To: 'ing.fcastellanos@gmail.com', 
+				From: array[1].value, 
+				Subject: subject, 
+				Body: message, 
+			  }) 
+				.then(function (message) { 
+					sLoader.fadeOut(); 
+					$('#message-warning').hide();
+					$('#contactForm').fadeOut();
+					$('#message-success').fadeIn();   
+				})
+			
+			
+		// 	$.ajax({      	
 
-		      },
-		      error: function() {
+		//       type: "POST",
+		//       url: "inc/sendEmail.php",
+		//       data: $(form).serialize(),
+		//       beforeSend: function() { 
 
-		      	sLoader.fadeOut(); 
-		      	$('#message-warning').html("Something went wrong. Please try again.");
-		         $('#message-warning').fadeIn();
+		//       	sLoader.fadeIn(); 
 
-		      }
+		//       },
+		//       success: function(msg) {
 
-	      });     		
+	    //         // Message was sent
+	    //         if (msg == 'OK') {
+	    //         	sLoader.fadeOut(); 
+	    //            $('#message-warning').hide();
+	    //            $('#contactForm').fadeOut();
+	    //            $('#message-success').fadeIn();   
+	    //         }
+	    //         // There was an error
+	    //         else {
+	    //         	sLoader.fadeOut(); 
+	    //            $('#message-warning').html(msg);
+		//             $('#message-warning').fadeIn();
+	    //         }
+
+		//       },
+		//       error: function() {
+
+		//       	sLoader.fadeOut(); 
+		//       	$('#message-warning').html("Something went wrong. Please try again.");
+		//          $('#message-warning').fadeIn();
+
+		//       }
+
+	    //   });     		
   		}
 
 	});
