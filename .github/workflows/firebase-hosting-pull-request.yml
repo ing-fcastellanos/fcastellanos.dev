@@ -9,8 +9,8 @@ permissions:
   pull-requests: write     # to post the preview URL as a comment
 jobs:
   preview:
-    # Fork PRs can't access WIF (and shouldn't deploy) — skip them.
-    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    # Skip fork PRs and Dependabot — neither can obtain the OIDC token for WIF.
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
