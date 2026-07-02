@@ -1,19 +1,20 @@
 {
-  "name": "resumehtml",
-  "version": "1.0.0",
-  "description": "CV Page",
-  "main": "index.js",
+  "name": "fcastellanos-dev",
+  "version": "2.0.0",
+  "description": "Personal portfolio & CV site for Francisco Castellanos — Senior Full-Stack & Agentic Engineer.",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "serve": "firebase serve --only hosting",
+    "deploy": "firebase deploy --only hosting"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fcastellanosKreios/ResumeHTML.git"
+    "url": "git+https://github.com/ing-fcastellanos/fcastellanos.dev.git"
   },
-  "author": "Francisco Castellanos",
-  "license": "ISC",
+  "author": "Francisco Castellanos <ing.fcastellanos@gmail.com>",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/fcastellanosKreios/ResumeHTML/issues"
+    "url": "https://github.com/ing-fcastellanos/fcastellanos.dev/issues"
   },
-  "homepage": "https://github.com/fcastellanosKreios/ResumeHTML#readme"
+  "homepage": "https://fcastellanos.dev"
 }
