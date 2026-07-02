@@ -1,0 +1,43 @@
+name: 🐞 Bug report
+description: Report something that's broken or renders incorrectly
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to '...'
+        2. Click '...'
+        3. See the issue
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Browser & viewport
+      placeholder: "e.g. Chrome 126 on Windows, 375px mobile"
+    validations:
+      required: true
+  - type: dropdown
+    id: language
+    attributes:
+      label: Language / theme (if relevant)
+      multiple: true
+      options:
+        - English
+        - Español
+        - Light theme
+        - Dark theme
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Drag & drop images here if helpful.

@@ -1,0 +1,23 @@
+name: ✨ Feature request
+description: Suggest an improvement or new content
+labels: ["feature"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's the idea?
+      description: Describe the improvement and the problem it solves.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed approach
+      description: How might it look or work? Keep in mind the site is dependency-free (no build/framework).
+  - type: checkboxes
+    id: i18n
+    attributes:
+      label: Considerations
+      options:
+        - label: This adds user-facing text (must be bilingual ES/EN)
+        - label: This affects layout (should stay responsive)
