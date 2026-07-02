@@ -268,13 +268,21 @@
         <div style="background:#0f1f1a;border:1px solid #3a2a12;border-radius:11px;overflow:hidden;">
           <div style="padding:10px 14px;border-bottom:1px solid #241a10;font-family:'JetBrains Mono',monospace;font-size:11px;color:#EF9F27;">send-message.sh</div>
           <div style="padding:16px;">
-            <div style="font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#6f8078;margin-bottom:10px;">// type a message, hit enter to compose an email</div>
-            <div style="display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:13.5px;">
-              <span style="color:var(--amber);">❯</span><span style="color:#8aa39a;">send</span><span style="color:#2FB380;">"</span>
-              <input data-send-input placeholder="hola Francisco…" style="flex:1;background:transparent;border:none;outline:none;color:#c6d3cd;font-family:'JetBrains Mono',monospace;font-size:13.5px;caret-color:#EF9F27;">
-              <span style="color:#2FB380;">"</span>
-            </div>
-            <div data-send-status style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#6f8078;margin-top:12px;min-height:16px;"></div>
+            <div data-i18n="contact.form.hint" style="font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#6f8078;margin-bottom:10px;">// leave your email and a message — hit enter to send</div>
+            <form data-send-form novalidate>
+              <div style="display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:13.5px;margin-bottom:7px;">
+                <span style="color:var(--amber);">❯</span><span style="color:#8aa39a;">email</span><span style="color:#2FB380;">"</span>
+                <input data-send-email type="email" name="email" autocomplete="email" aria-label="email" placeholder="you@email.com" style="flex:1;background:transparent;border:none;outline:none;color:#c6d3cd;font-family:'JetBrains Mono',monospace;font-size:13.5px;caret-color:#EF9F27;">
+                <span style="color:#2FB380;">"</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:13.5px;">
+                <span style="color:var(--amber);">❯</span><span style="color:#8aa39a;">send</span><span style="color:#2FB380;">"</span>
+                <input data-send-input name="message" aria-label="message" placeholder="hola Francisco…" style="flex:1;background:transparent;border:none;outline:none;color:#c6d3cd;font-family:'JetBrains Mono',monospace;font-size:13.5px;caret-color:#EF9F27;">
+                <span style="color:#2FB380;">"</span>
+              </div>
+              <input data-hp type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;">
+              <div data-send-status role="status" aria-live="polite" style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#6f8078;margin-top:12px;min-height:16px;"></div>
+            </form>
           </div>
         </div>
         <div style="display:flex;flex-direction:column;gap:9px;">
@@ -324,6 +332,7 @@ document.addEventListener('DOMContentLoaded', function(){
       'loop.sub': "The core pattern behind my agentic systems: a model reasons, calls a tool, reads the result, and decides the next step — with evals gating every deploy.",
       'contact.head': "Let's build something that ships.",
       'contact.sub': "Open to senior full-stack & agentic engineering roles. Say hi below.",
+      'contact.form.hint': "// leave your email and a message — hit enter to send",
     },
     es: {
       'hero.tag': "Construyo plataformas en producción y sistemas de IA agentic — marketplaces multi-tenant en AWS con front-ends React/Angular, back-ends Java y C#/.NET, y LLMs integrados en el producto y el flujo de desarrollo.",
@@ -333,6 +342,7 @@ document.addEventListener('DOMContentLoaded', function(){
       'loop.sub': "El patrón base de mis sistemas agentic: el modelo razona, llama una herramienta, lee el resultado y decide el siguiente paso — con evals que controlan cada despliegue.",
       'contact.head': "Construyamos algo que llegue a producción.",
       'contact.sub': "Abierto a roles senior de full-stack & agentic engineering. Salúdame abajo.",
+      'contact.form.hint': "// deja tu email y un mensaje — presiona enter para enviar",
     }
   };
   var lang = 'en';
@@ -433,9 +443,27 @@ document.addEventListener('DOMContentLoaded', function(){
   // ---------- clock ----------
   var clock = q('[data-clock]'); function tick(){ var d = new Date(); clock.textContent = d.toTimeString().slice(0, 8) + ' local'; } tick(); setInterval(tick, 1000);
 
-  // ---------- contact mini-terminal ----------
-  var sInput = q('[data-send-input]'), sStatus = q('[data-send-status]');
-  sInput.addEventListener('keydown', function(e){ if (e.key === 'Enter' && sInput.value.trim()){ var msg = sInput.value.trim(); sStatus.innerHTML = '<span style="color:var(--acc)">✓ opening your mail client…</span>'; window.location.href = 'mailto:ing.fcastellanos@gmail.com?subject=' + encodeURIComponent('Hola Francisco') + '&body=' + encodeURIComponent(msg); } });
+  // ---------- contact form (Formspree) ----------
+  var FORMSPREE = 'https://formspree.io/f/mwvdwrbg';
+  var sForm = q('[data-send-form]'), sInput = q('[data-send-input]'), sEmail = q('[data-send-email]'), sStatus = q('[data-send-status]'), sHp = q('[data-hp]');
+  var sMsg = {
+    en: { sending: 'sending…', ok: "✓ sent — I'll get back to you soon.", err: '✗ something went wrong. email me directly.', invalidEmail: '✗ enter a valid email.', invalidMsg: '✗ type a message first.' },
+    es: { sending: 'enviando…', ok: '✓ enviado — te respondo pronto.', err: '✗ algo salió mal. escríbeme directo.', invalidEmail: '✗ ingresa un email válido.', invalidMsg: '✗ escribe un mensaje primero.' }
+  };
+  function sSay(kind, color){ sStatus.innerHTML = '<span style="color:' + color + '">' + sMsg[lang][kind] + '</span>'; }
+  function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+  if (sForm) sForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    if (sHp && sHp.value) return; // honeypot tripped — silently drop bots
+    var email = (sEmail.value || '').trim(), msg = (sInput.value || '').trim();
+    if (!validEmail(email)) { sSay('invalidEmail', 'var(--amber)'); sEmail.focus(); return; }
+    if (!msg) { sSay('invalidMsg', 'var(--amber)'); sInput.focus(); return; }
+    sSay('sending', 'var(--muted)');
+    var data = new FormData(); data.append('email', email); data.append('message', msg);
+    fetch(FORMSPREE, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } })
+      .then(function(res){ if (res.ok) { sSay('ok', 'var(--acc)'); sForm.reset(); } else { sSay('err', 'var(--amber)'); } })
+      .catch(function(){ sSay('err', 'var(--amber)'); });
+  });
 
   // ---------- command palette ----------
   var pal = q('[data-palette]'), palIn = q('[data-palette-input]'), palList = q('[data-palette-list]');
