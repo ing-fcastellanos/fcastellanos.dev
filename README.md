@@ -23,6 +23,7 @@ Personal portfolio & CV site for **Francisco Castellanos** — Senior Full-Stack
 - 🖥️ Terminal boot animation, typed section headers and scroll reveals
 - 🗂️ **Project filtering** by tech tag
 - 📨 **Contact form** wired to [Formspree](https://formspree.io) (with honeypot + validation)
+- ✦ **[CV Tailoring Studio](https://fcastellanos.dev/tailor)** — an in-browser AI tool that tailors the CV to a job and exports EN/ES PDFs ([docs](docs/cv-tailor.md))
 - ⚡ No build step, no framework — just HTML, inline CSS and vanilla JS
 
 ### Tech stack

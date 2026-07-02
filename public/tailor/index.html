@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CV Tailoring Studio — Francisco Castellanos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{--base:#0a1512;--panel:#0f1f1a;--card:#12211c;--hair:#1e3a30;--hair2:#2a4d40;--text:#c6d3cd;--muted:#8aa39a;--dim:#6f8078;--title:#eaf5f0;--acc:#2FB380;--acc2:#3fd39a;--tint:#16352b;--amber:#EF9F27;--red:#e05a4d;--mono:'JetBrains Mono',monospace;--sans:'Inter',system-ui,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--base);color:var(--text);font-family:var(--sans);line-height:1.55;padding:0 0 60px}
+a{color:var(--acc)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+.top{border-bottom:1px solid var(--hair);padding:20px 0;margin-bottom:26px}
+.brand{font-family:var(--mono);font-size:15px;color:var(--title);font-weight:600}
+.brand .a{color:var(--acc)}
+.sub{font-size:13px;color:var(--muted);margin-top:4px}
+.grid{display:grid;grid-template-columns:390px 1fr;gap:26px;align-items:start}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--hair);border-radius:12px;padding:20px}
+.lbl{font-family:var(--mono);font-size:12px;color:var(--acc);margin:16px 0 7px;display:block}
+.lbl:first-child{margin-top:0}
+.hint{font-size:11.5px;color:var(--dim);margin-top:4px}
+textarea,input,select{width:100%;background:var(--card);border:1px solid var(--hair2);border-radius:8px;color:var(--text);font-family:var(--sans);font-size:13.5px;padding:10px 12px;outline:none}
+textarea{resize:vertical;min-height:74px;line-height:1.5}
+textarea:focus,input:focus,select:focus{border-color:var(--acc)}
+input[type=password],.mono-in{font-family:var(--mono);font-size:12.5px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{font-family:var(--mono);font-size:13px;font-weight:600;border-radius:8px;padding:11px 14px;cursor:pointer;border:1px solid var(--hair2);background:transparent;color:var(--text);transition:.15s}
+.btn:hover{border-color:var(--acc);color:var(--acc)}
+.btn.primary{background:var(--acc);color:#06120d;border-color:var(--acc)}
+.btn.primary:hover{background:var(--acc2);color:#06120d}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btns{display:flex;flex-direction:column;gap:9px;margin-top:18px}
+.status{font-family:var(--mono);font-size:12px;color:var(--dim);margin-top:12px;min-height:18px;white-space:pre-wrap}
+.status .ok{color:var(--acc)}
+.status .err{color:var(--red)}
+.pvhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.pvtitle{font-family:var(--mono);font-size:13px;color:var(--acc)}
+.toggle{display:inline-flex;border:1px solid var(--hair2);border-radius:7px;overflow:hidden}
+.toggle button{font-family:var(--mono);font-size:12px;padding:6px 14px;background:transparent;color:var(--muted);border:none;cursor:pointer}
+.toggle button.on{background:var(--acc);color:#06120d}
+.changes{background:var(--card);border:1px solid var(--hair);border-radius:9px;padding:14px 16px;margin-bottom:16px;font-size:13px}
+.changes h4{font-family:var(--mono);font-size:11px;color:var(--acc);margin-bottom:7px}
+.changes .chgline{color:var(--muted);margin-bottom:4px}
+.changes .chgline b{color:var(--title);font-weight:500}
+.pvscroll{background:#525659;border:1px solid var(--hair);border-radius:10px;padding:18px;overflow:auto;max-height:80vh}
+.pvscale{transform-origin:top center;transform:scale(.62);width:816px;margin:0 auto}
+.pill{font-family:var(--mono);font-size:10px;color:var(--amber);background:rgba(239,159,39,.12);border:1px solid rgba(239,159,39,.3);padding:3px 8px;border-radius:5px}
+.presets{display:flex;flex-wrap:wrap;gap:6px}
+.preset{font-family:var(--mono);font-size:11.5px;padding:6px 10px;border-radius:7px;border:1px solid var(--hair2);background:var(--card);color:var(--muted);cursor:pointer}
+.preset:hover{border-color:var(--acc);color:var(--text)}
+.preset.on{background:var(--tint);color:var(--acc);border-color:var(--acc)}
+.remember{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-top:9px;cursor:pointer}
+.remember input{width:auto;accent-color:#2FB380}
+.remember a{margin-left:auto;font-size:11px;color:var(--acc);cursor:pointer}
+
+/* ---------- CV TEMPLATE (scoped cv-*) ---------- */
+.cv-page{width:816px;height:1056px;background:#fff;display:flex;color:#1a1f26;font-family:var(--sans);margin-bottom:18px;overflow:hidden}
+.cv-page:last-child{margin-bottom:0}
+.cv-side{width:261px;flex:0 0 261px;background:#0f1f1a;color:#c6d3cd;padding:40px 28px}
+.cv-side>*{margin-bottom:24px}
+.cv-side>*:last-child{margin-bottom:0}
+.cv-nm{font-size:30px;font-weight:700;color:#fff;line-height:1.05;letter-spacing:-.5px}
+.cv-role{font-family:var(--mono);font-size:11px;color:#2FB380;margin-top:10px;line-height:1.4}
+.cv-portfolio{display:inline-block;margin-top:12px;font-family:var(--mono);font-size:10.5px;color:#2FB380;background:#16352b;border:1px solid #2FB380;padding:5px 10px;border-radius:4px}
+.cv-contact{font-size:11.5px;color:#a4b3ac;line-height:1.5}
+.cv-crow{margin-bottom:4px}
+.cv-cbadge{display:inline-block;background:#16352b;color:#2FB380;font-family:var(--mono);font-size:9px;padding:2px 5px;border-radius:3px;margin-right:8px}
+.cv-sh{font-family:var(--mono);font-size:12px;font-weight:600;color:#2FB380;margin-bottom:11px}
+.cv-chips{line-height:2}
+.cv-chip{display:inline-block;background:#16352b;color:#2FB380;font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:4px;margin:0 4px 5px 0}
+.cv-edu{font-size:11.5px;line-height:1.45;margin-bottom:10px}
+.cv-edu b{color:#fff;font-weight:600}
+.cv-edu .s{color:#a4b3ac}
+.cv-edu .d{color:#6f8078;font-family:var(--mono);font-size:10px;margin-top:2px}
+.cv-langs{font-size:11.5px;line-height:1.6;color:#a4b3ac}
+.cv-lrow{display:flex;justify-content:space-between}
+.cv-lval{color:#6f8078;font-family:var(--mono);font-size:10px}
+.cv-p02{font-family:var(--mono);font-size:10px;color:#6f8078}
+.cv-main{flex:1;padding:40px 38px;min-width:0}
+.cv-main>section{margin-bottom:22px}
+.cv-main>section:last-child{margin-bottom:0}
+.cv-mh{font-family:var(--mono);font-size:13px;font-weight:600;color:#2FB380;background:rgba(47,179,128,.1);padding:6px 10px;border-radius:4px;margin-bottom:10px}
+.cv-mh.exp{margin-bottom:14px}
+.cv-summary{font-size:12.5px;line-height:1.6;color:#333a42}
+.cv-exp{display:flex;flex-direction:column;gap:15px}
+.cv-jobh{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.cv-jobt{font-size:13.5px;font-weight:700;color:#1a1f26}
+.cv-jobd{font-family:var(--mono);font-size:10.5px;color:#6f8078;white-space:nowrap}
+.cv-jobc{font-family:var(--mono);font-size:10.5px;color:#2FB380;margin:3px 0 7px}
+.cv-bul{list-style:none}
+.cv-bul li{font-size:12px;line-height:1.5;color:#333a42;padding-left:14px;text-indent:-14px;margin-bottom:5px}
+.cv-mk{color:#2FB380;font-weight:600;margin-right:6px}
+.cv-work{list-style:none}
+.cv-work li{font-size:12px;line-height:1.5;color:#333a42;padding-left:14px;text-indent:-14px;margin-bottom:6px}
+.cv-work strong{color:#1a1f26}
+#offscreen{position:absolute;left:-9999px;top:0}
+</style>
+</head>
+<body>
+<div class="top"><div class="wrap">
+  <div class="brand">❯ cv <span class="a">tailoring</span> studio</div>
+  <div class="sub">Genera un CV adaptado (EN + ES) resaltando lo que tú indiques, con IA. Todo corre en tu navegador.</div>
+</div></div>
+
+<div class="wrap grid">
+
+  <div class="panel">
+    <label class="lbl">❯ puntos a destacar</label>
+    <textarea id="highlights" placeholder="Ej.: AWS, Angular, C#/.NET, SQL Server, liderazgo de equipo, pagos con Stripe…"></textarea>
+    <div class="hint">Temas, frameworks o detalles que quieres que resalten en el CV.</div>
+
+    <label class="lbl">❯ o pega la descripción de la vacante</label>
+    <textarea id="jobdesc" placeholder="Pega aquí el job description completo (opcional)…"></textarea>
+    <label class="lbl">❯ tono / preset</label>
+    <div class="presets" id="presets"><button class="preset on" data-tone="">Balanceado</button><button class="preset" data-tone="agentic">Más agentic / AI</button><button class="preset" data-tone="backend">Más backend / .NET</button><button class="preset" data-tone="fullstack">Más full-stack</button><button class="preset" data-tone="leadership">Liderazgo / consultoría</button></div>
+    <div class="hint">Orienta el énfasis del CV adaptado.</div>
+
+    <label class="lbl">❯ openai api key</label>
+    <input id="apikey" type="password" class="mono-in" placeholder="sk-…" autocomplete="off">
+    <div class="hint">Se usa solo desde tu navegador para llamar a OpenAI.</div>
+    <label class="remember"><input type="checkbox" id="remember"> Recordar la API key en este navegador <a id="forgetKey" style="display:none">olvidar</a></label>
+
+    <div class="row2" style="margin-top:14px">
+      <div><label class="lbl" style="margin-top:0">❯ modelo</label>
+        <select id="model">
+          <option value="gpt-4o-mini">gpt-4o-mini (rápido/barato)</option>
+          <option value="gpt-4o">gpt-4o</option>
+          <option value="gpt-4.1">gpt-4.1</option>
+          <option value="gpt-4.1-mini">gpt-4.1-mini</option>
+          <option value="o4-mini">o4-mini</option>
+          <option value="__custom">otro (escríbelo)…</option>
+        </select>
+      </div>
+      <div><label class="lbl" style="margin-top:0">&nbsp;</label>
+        <input id="modelcustom" class="mono-in" placeholder="model id" style="display:none">
+      </div>
+    </div>
+
+    <div class="btns">
+      <button class="btn primary" id="genBtn">✦ Generar CV tailored (IA)</button>
+      <button class="btn" id="baseBtn">Ver CV base (sin IA)</button>
+    </div>
+    <div class="status" id="status"></div>
+  </div>
+
+  <div class="panel">
+    <div class="pvhead">
+      <span class="pvtitle">❯ preview</span>
+      <div style="display:flex;gap:10px;align-items:center">
+        <span class="pill" id="tstamp">—</span>
+        <div class="toggle"><button id="tabEN" class="on">EN</button><button id="tabES">ES</button></div>
+      </div>
+    </div>
+    <div class="changes" id="changes" style="display:none">
+      <h4>❯ ajustes aplicados</h4>
+      <div id="changesBody"></div>
+    </div>
+    <div class="pvscroll"><div class="pvscale" id="preview"></div></div>
+    <button class="btn primary" id="pdfBtn" style="width:100%;margin-top:16px" disabled>⬇ Descargar PDF (EN + ES) con timestamp</button>
+    <div class="status" id="pdfStatus"></div>
+  </div>
+
+</div>
+
+<div id="offscreen"></div>
+<script>
+const DATA = {
+  name: "Francisco Castellanos",
+  portfolio: "fcastellanos.dev",
+  contact: [
+    ["em","ing.fcastellanos@gmail.com"],
+    ["ph","+52 55 5953 7164"],
+    ["gh","github.com/ing-fcastellanos"],
+    ["in","linkedin.com/in/ing-fcastellanos"],
+    ["lo","Mexico City · remote"]
+  ],
+  contact_lo_es: "Ciudad de México · remoto",
+  role_en: "// senior full-stack & agentic engineer",
+  role_es: "// senior full-stack & agentic engineer",
+  summary_en: "Senior Full-Stack Engineer with 10+ years building scalable web platforms and, over the past year, leading agentic (AI-assisted) engineering in production. I design and ship multi-tenant marketplaces on AWS (ECS/Fargate, RDS, S3) with Java/Spring Boot and C#/.NET back-ends, React and Angular front-ends, and PostgreSQL and SQL Server databases — embedding LLMs and agentic workflows both in the product and across the development lifecycle.",
+  summary_es: "Ingeniero Full-Stack Senior con más de 10 años construyendo plataformas web escalables y, en el último año, liderando ingeniería agentic (asistida por IA) en producción. Diseño y despliego marketplaces multi-tenant sobre AWS (ECS/Fargate, RDS, S3) con back-ends en Java/Spring Boot y C#/.NET, front-ends en React y Angular, y bases de datos PostgreSQL y SQL Server — integrando LLMs y flujos agentic tanto en el producto como en el ciclo de desarrollo.",
+  stack: ["AWS","React","Angular","Java 21","C#/.NET","SQL Server","PostgreSQL","Spring Boot","TypeScript"],
+  ai: ["Claude tool-use","OpenAI","MCP","RAG","Claude Code","OpenSpec","subagents","tool-calling"],
+  tools: ["Node.js","Docker","Kubernetes","GCP","Firestore","Terraform"],
+  practices: ["CI/CD","spec-driven dev","e2e testing","code review","Agile/Scrum"],
+  education: [
+    {b_en:"Data Science & ML, Postgraduate", b_es:"Postgrado en Data Science y ML", s:"IEBS, Madrid", d_en:"2020", d_es:"2020"},
+    {b_en:"M.Sc. in Engineering (MCI)", b_es:"Maestría en Ingeniería (MCI)", s_en:"UNAM, Mexico City", s_es:"UNAM, CDMX", d_en:"2012", d_es:"2012"},
+    {b_en:"B.Eng. Industrial · Systems minor", b_es:"Ing. Industrial · minor en Sistemas", s:"Tec de Monterrey", d_en:"2009 · WES-validated (Canada)", d_es:"2009 · Validado por WES (Canadá)"}
+  ],
+  certs: [
+    {n:"Scrum Master", d:"SCRUMstudy · 2017"},
+    {n:"Six Sigma Black Belt", d:"2011"},
+    {n:"Six Sigma Green Belt", d:"ASU · 2010"},
+    {n:"ISO 9001 Lead Auditor", d:"2012"}
+  ],
+  languages_en: [["Spanish","native"],["English","professional"]],
+  languages_es: [["Español","nativo"],["Inglés","profesional"]],
+  experience: [
+    { role:"HK Tech — Senior Full-Stack & Agentic Engineer", years_en:"nov 2025 — present", years_es:"nov 2025 — actual",
+      ctx_en:"// early-stage startups · Utah market (Salt Lake City, Sandy)", ctx_es:"// startups en etapa temprana · mercado de Utah (Salt Lake City, Sandy)",
+      bullets_en:[
+        "Designed and shipped multi-tenant marketplaces on AWS (ECS/Fargate, RDS, S3, CloudFront, Secrets Manager) with Java 21 / Spring Boot 3.4 back-ends and React 19 front-ends.",
+        "Delivered the flagship platform through 500+ deployed pull requests with CI/CD gated by migration version, Playwright e2e, and continuous staging/production deploys.",
+        "Implemented stateless JWT RS256 auth with token rotation/revocation, keys in AWS Secrets Manager, and SSO/OIDC.",
+        "Embedded LLM features in product: employer verification, candidate↔job matching, and CV parsing with OpenAI (strict json_schema).",
+        "Built and operate an agentic, spec-driven dev flow (Claude Code + OpenSpec) with subagents, Jira and GitHub MCP in the loop, and AI-powered PR review in CI.",
+        "Built front-ends in React 19 and Angular 19 (TypeScript, Tailwind, TanStack Query, i18n) and integrated Stripe Connect payments."],
+      bullets_es:[
+        "Diseñé y desplegué marketplaces multi-tenant en AWS (ECS/Fargate, RDS, S3, CloudFront, Secrets Manager) con back-ends Java 21 / Spring Boot 3.4 y front-ends React 19.",
+        "Entregué la plataforma insignia con 500+ pull requests desplegados, con CI/CD gated por versión de migraciones, pruebas e2e (Playwright) y despliegue continuo a staging y producción.",
+        "Implementé autenticación JWT RS256 stateless con rotación/revocación de tokens, claves en AWS Secrets Manager y SSO/OIDC.",
+        "Integré features de LLM en el producto: verificación de empleadores, matching candidato↔vacante y parsing de CVs con OpenAI (json_schema estricto).",
+        "Construí y opero un flujo de desarrollo agentic spec-driven (Claude Code + OpenSpec) con subagents, MCP de Jira y GitHub en el loop, y revisión de PRs con IA en CI.",
+        "Desarrollé front-ends en React 19 y Angular 19 (TypeScript, Tailwind, TanStack Query, i18n) e integré pagos con Stripe Connect."] },
+    { role:"AudioEnhancement — Software Developer", years_en:"nov 2024 — nov 2025", years_es:"nov 2024 — nov 2025",
+      ctx_en:"// GoLang · AWS · Python — Utah, USA (remote)", ctx_es:"// GoLang · AWS · Python — Utah, USA (remoto)",
+      bullets_en:[
+        "Engineered a GoLang API on AWS EC2 connected to RDS for robust data-management workflows.",
+        "Configured monitoring/alerting on AWS Lambda + CloudWatch, cutting outage response time 40%.",
+        "Implemented SSO with AWS Cognito/Amplify and scaled the platform to 2,500+ schools / 60,000+ users."],
+      bullets_es:[
+        "Diseñé una API en GoLang sobre AWS EC2 conectada a RDS para flujos robustos de gestión de datos.",
+        "Configuré monitoreo/alertas en AWS Lambda + CloudWatch, reduciendo 40% el tiempo de respuesta ante caídas.",
+        "Implementé SSO con AWS Cognito/Amplify y escalé la plataforma a 2,500+ escuelas / 60,000+ usuarios."] },
+    { role:"XLMedia PLC — Full Stack Developer", years_en:"may 2022 — nov 2024", years_es:"may 2022 — nov 2024",
+      ctx_en:"// Node.js · React · AWS · GCP — London, UK (remote)", ctx_es:"// Node.js · React · AWS · GCP — Londres, UK (remoto)",
+      bullets_en:[
+        "Refactored legacy monoliths into serverless microservices (Node.js + AWS Lambda), cutting infra cost 25%.",
+        "Built and deployed REST microservices across AWS and GCP (Lambda, Cloud Run, Cloud Functions) with React front-ends; +30% advertiser visibility across 10+ sites.",
+        "Managed Docker/Kubernetes CI/CD and MongoDB Atlas databases."],
+      bullets_es:[
+        "Refactoricé monolitos legacy a microservicios serverless (Node.js + AWS Lambda), reduciendo 25% el costo de infraestructura.",
+        "Desarrollé y desplegué microservicios REST en AWS y GCP (Lambda, Cloud Run, Cloud Functions) con front-ends React; +30% de visibilidad de anunciantes en 10+ sitios.",
+        "Gestioné CI/CD con Docker/Kubernetes y bases MongoDB Atlas."] },
+    { role:"Kreios — Sr Consultant & Software Developer", years_en:"may 2018 — may 2022", years_es:"may 2018 — may 2022",
+      ctx_en:"// C#/.NET · SQL Server · Node.js — Mexico City", ctx_es:"// C#/.NET · SQL Server · Node.js — Ciudad de México",
+      bullets_en:[
+        "Built insurance policy-administration systems in C#/.NET with SQL Server for AXA XL (XL Catlin) and AXA Seguros México.",
+        "Built scholarship & course-equivalence platforms for Aliat (52 campuses, 12k students) with MEAN, OCR (Google Vision) and AI course assignment; an AXA NLP chatbot; and UIPath RPA.",
+        "Developed Node.js REST/micro-services (JWT, PM2, Nginx); automation cut response time 50% and lifted client satisfaction 15%."],
+      bullets_es:[
+        "Construí sistemas de administración de pólizas en C#/.NET con SQL Server para AXA XL (XL Catlin) y AXA Seguros México.",
+        "Construí plataformas de becas y equivalencia de cursos para Aliat (52 campus, 12k alumnos) con MEAN, OCR (Google Vision) y asignación de cursos con IA; un chatbot NLP para AXA; y RPA con UIPath.",
+        "Desarrollé servicios REST/micro-servicios en Node.js (JWT, PM2, Nginx); la automatización redujo 50% el tiempo de respuesta y elevó 15% la satisfacción del cliente."] },
+    { role:"STRATIS — Senior Process Business Consultant", years_en:"sep 2016 — may 2018", years_es:"sep 2016 — may 2018",
+      ctx_en:"// BPMN · Scrum — Mexico City", ctx_es:"// BPMN · Scrum — Ciudad de México",
+      bullets_en:["Led business analysis for the XL Insurance Mexico account: 120+ BPMN diagrams and 250+ process/automation improvement opportunities via lean analysis."],
+      bullets_es:["Lideré el análisis de negocio de la cuenta XL Insurance México: 120+ diagramas BPMN y 250+ oportunidades de mejora de procesos y automatización mediante análisis lean."] },
+    { role:"AIG — Change Agent (WoW Navigator)", years_en:"nov 2013 — may 2016", years_es:"nov 2013 — may 2016",
+      ctx_en:"// process transformation — CDMX · New York · LatAm", ctx_es:"// transformación de procesos — CDMX · Nueva York · LatAm",
+      bullets_en:["Drove operational transformation across underwriting, marketing and transactional teams in the US and Latin America — diagnostics, process maps, SOPs and structured problem-solving workshops across four initiatives."],
+      bullets_es:["Impulsé la transformación operativa en equipos de underwriting, marketing y transaccionales en EE. UU. y Latinoamérica — diagnósticos, mapeo de procesos, procedimientos estándar y talleres de solución estructurada de problemas en cuatro iniciativas."] }
+  ],
+  work_en: [
+    "<strong>CareForce · MaidNDemand · Intern-n-Demand</strong> — production staffing marketplaces (Java/Spring Boot + React 19 + PostgreSQL + AWS + Stripe Connect) with in-product AI and agentic engineering.",
+    "<strong>p1-aws-ops-assistant</strong> — conversational CLI answering AWS-infrastructure questions via Claude tool-use + boto3.",
+    "<strong>clockify-automation</strong> — Jira↔Clockify sync CLI, published to PyPI (mypy --strict, multi-OS CI)."],
+  work_es: [
+    "<strong>CareForce · MaidNDemand · Intern-n-Demand</strong> — marketplaces de staffing en producción (Java/Spring Boot + React 19 + PostgreSQL + AWS + Stripe Connect) con IA en el producto e ingeniería agentic.",
+    "<strong>p1-aws-ops-assistant</strong> — CLI conversacional que responde preguntas sobre infraestructura AWS vía Claude tool-use + boto3.",
+    "<strong>clockify-automation</strong> — CLI de sincronización Jira↔Clockify, publicado en PyPI (mypy --strict, CI multi-OS)."]
+};
+</script>
+<script>
+(function(){
+  var tailored = null;         // null = CV base
+  var lang = 'en';
+  var tonePreset = '';
+  var TONE = {
+    '': '',
+    agentic: 'Emphasize AI / agentic engineering: LLM tool-use, MCP, RAG, Claude Code + OpenSpec, and building production AI agents. Lead the summary with the agentic angle and surface AI skills first.',
+    backend: 'Emphasize backend & cloud engineering: Java/Spring Boot, C#/.NET, SQL Server & PostgreSQL, AWS architecture, microservices, security and reliability. De-emphasize front-end.',
+    fullstack: 'Emphasize full-stack breadth: React/Angular front-ends with Java and Node back-ends on AWS, delivering features end to end.',
+    leadership: 'Emphasize leadership, consulting and process depth: team leadership, stakeholder management, Six Sigma/BPMN and delivering measurable business outcomes.'
+  };
+  var $ = function(id){ return document.getElementById(id); };
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function chipsHtml(arr, cls){ return arr.map(function(c){ return '<span class="'+cls+'">'+esc(c)+'</span>'; }).join(''); }
+
+  function eff(){
+    var t = tailored || {};
+    return {
+      role_en: t.role_en || DATA.role_en, role_es: t.role_es || DATA.role_es,
+      summary_en: t.summary_en || DATA.summary_en, summary_es: t.summary_es || DATA.summary_es,
+      stack: (t.stack && t.stack.length) ? t.stack : DATA.stack,
+      ai: (t.ai && t.ai.length) ? t.ai : DATA.ai,
+      exp: DATA.experience.map(function(job,i){
+        var tj = (t.experience || [])[i] || {};
+        return {
+          role: job.role, years_en: job.years_en, years_es: job.years_es,
+          ctx_en: job.ctx_en, ctx_es: job.ctx_es,
+          bullets_en: (tj.bullets_en && tj.bullets_en.length) ? tj.bullets_en : job.bullets_en,
+          bullets_es: (tj.bullets_es && tj.bullets_es.length) ? tj.bullets_es : job.bullets_es
+        };
+      })
+    };
+  }
+
+  function jobHtml(job, ln){
+    var years = ln==='es'?job.years_es:job.years_en, ctx = ln==='es'?job.ctx_es:job.ctx_en;
+    var bl = (ln==='es'?job.bullets_es:job.bullets_en).map(function(b){ return '<li><span class="cv-mk">›</span>'+esc(b)+'</li>'; }).join('');
+    return '<article><div class="cv-jobh"><h3 class="cv-jobt">'+esc(job.role)+'</h3><span class="cv-jobd">'+esc(years)+'</span></div>'+
+           '<p class="cv-jobc">'+esc(ctx)+'</p><ul class="cv-bul">'+bl+'</ul></article>';
+  }
+
+  function renderCV(ln){
+    var d = eff();
+    var role = ln==='es'?d.role_es:d.role_en;
+    var contact = DATA.contact.map(function(c){
+      var val = (c[0]==='lo' && ln==='es') ? DATA.contact_lo_es : c[1];
+      return '<div class="cv-crow"><span class="cv-cbadge">'+c[0]+'</span>'+esc(val)+'</div>';
+    }).join('');
+    var edu = DATA.education.map(function(e){
+      var b = ln==='es'?e.b_es:e.b_en, s = ln==='es'?(e.s_es||e.s):(e.s_en||e.s), dd = ln==='es'?e.d_es:e.d_en;
+      return '<div class="cv-edu"><b>'+esc(b)+'</b><div class="s">'+esc(s)+'</div><div class="d">'+esc(dd)+'</div></div>';
+    }).join('');
+    var langs = (ln==='es'?DATA.languages_es:DATA.languages_en).map(function(l){
+      return '<div class="cv-lrow"><span>'+esc(l[0])+'</span><span class="cv-lval">'+esc(l[1])+'</span></div>';
+    }).join('');
+    var certs = DATA.certs.map(function(c){ return '<div class="cv-edu"><b>'+esc(c.n)+'</b><div class="d">'+esc(c.d)+'</div></div>'; }).join('');
+    var work = (ln==='es'?DATA.work_es:DATA.work_en).map(function(w){ return '<li><span class="cv-mk">›</span>'+w+'</li>'; }).join('');
+    var L = {sum:ln==='es'?'❯ resumen':'❯ summary', exp:ln==='es'?'❯ experiencia':'❯ experience',
+             expc:ln==='es'?'❯ experiencia (cont.)':'❯ experience (cont.)', stack:ln==='es'?'❯ stack principal':'❯ core stack',
+             ai:'❯ ai / agentic', edu:ln==='es'?'❯ educación':'❯ education', lang:ln==='es'?'❯ idiomas':'❯ languages',
+             tools:ln==='es'?'❯ herramientas':'❯ tools', prac:ln==='es'?'❯ prácticas':'❯ practices',
+             cert:ln==='es'?'❯ certificaciones':'❯ certifications', work:ln==='es'?'❯ proyectos destacados':'❯ selected work',
+             p02:ln==='es'?'francisco castellanos · página 02':'francisco castellanos · page 02'};
+    var page1 =
+      '<div class="cv-page"><aside class="cv-side">'+
+        '<header><h1 class="cv-nm">Francisco<br>Castellanos</h1><p class="cv-role">'+esc(role)+'</p>'+
+        '<span class="cv-portfolio">↗ '+DATA.portfolio+'</span></header>'+
+        '<section class="cv-contact">'+contact+'</section>'+
+        '<section><h2 class="cv-sh">'+L.stack+'</h2><div class="cv-chips">'+chipsHtml(d.stack,'cv-chip')+'</div></section>'+
+        '<section><h2 class="cv-sh">'+L.ai+'</h2><div class="cv-chips">'+chipsHtml(d.ai,'cv-chip')+'</div></section>'+
+        '<section><h2 class="cv-sh">'+L.edu+'</h2>'+edu+'</section>'+
+        '<section><h2 class="cv-sh">'+L.lang+'</h2><div class="cv-langs">'+langs+'</div></section>'+
+      '</aside><main class="cv-main">'+
+        '<section><h2 class="cv-mh">'+L.sum+'</h2><p class="cv-summary">'+esc(ln==='es'?d.summary_es:d.summary_en)+'</p></section>'+
+        '<section><h2 class="cv-mh exp">'+L.exp+'</h2><div class="cv-exp">'+jobHtml(d.exp[0],ln)+jobHtml(d.exp[1],ln)+'</div></section>'+
+      '</main></div>';
+    var page2 =
+      '<div class="cv-page"><aside class="cv-side">'+
+        '<div class="cv-p02">'+L.p02+'</div>'+
+        '<section><h2 class="cv-sh">'+L.tools+'</h2><div class="cv-chips">'+chipsHtml(DATA.tools,'cv-chip')+'</div></section>'+
+        '<section><h2 class="cv-sh">'+L.prac+'</h2><div class="cv-chips">'+chipsHtml(DATA.practices,'cv-chip')+'</div></section>'+
+        '<section><h2 class="cv-sh">'+L.cert+'</h2>'+certs+'</section>'+
+      '</aside><main class="cv-main">'+
+        '<section><h2 class="cv-mh exp">'+L.expc+'</h2><div class="cv-exp">'+jobHtml(d.exp[2],ln)+jobHtml(d.exp[3],ln)+jobHtml(d.exp[4],ln)+jobHtml(d.exp[5],ln)+'</div></section>'+
+        '<section><h2 class="cv-mh">'+L.work+'</h2><ul class="cv-work">'+work+'</ul></section>'+
+      '</main></div>';
+    return page1+page2;
+  }
+
+  function stamp(){ var d=new Date(),p=function(n){return String(n).padStart(2,'0');};
+    return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'-'+p(d.getHours())+p(d.getMinutes()); }
+
+  function updatePreview(){
+    $('preview').innerHTML = renderCV(lang);
+    $('tstamp').textContent = tailored ? ('tailored · '+stamp()) : ('base · '+stamp());
+    var ch = $('changes');
+    if(tailored){
+      ch.style.display='block';
+      var d=eff();
+      var lines = [];
+      lines.push('<div class="chgline"><b>Resumen</b> reescrito para la vacante/puntos indicados.</div>');
+      lines.push('<div class="chgline"><b>Stack priorizado:</b> '+esc(d.stack.slice(0,6).join(' · '))+'…</div>');
+      var note = lang==='es'?tailored.note_es:tailored.note_en;
+      if(note) lines.push('<div class="chgline"><b>Enfoque:</b> '+esc(note)+'</div>');
+      lines.push('<div class="chgline" style="color:var(--dim)">Los datos (empresas, fechas, métricas) no se inventan: solo se reordenan y reescriben.</div>');
+      $('changesBody').innerHTML = lines.join('');
+    } else ch.style.display='none';
+    $('pdfBtn').disabled = false;
+  }
+
+  function setStatus(el,msg,cls){ $(el).innerHTML = cls?('<span class="'+cls+'">'+esc(msg)+'</span>'):esc(msg); }
+
+  // ---------- OpenAI ----------
+  function currentModel(){ var m=$('model').value; return m==='__custom' ? ($('modelcustom').value.trim()||'gpt-4o-mini') : m; }
+  $('model').addEventListener('change', function(){ $('modelcustom').style.display = this.value==='__custom'?'block':'none'; });
+
+  async function generate(){
+    var key=$('apikey').value.trim();
+    var hi=$('highlights').value.trim(), jd=$('jobdesc').value.trim();
+    if(!key){ setStatus('status','Falta tu OpenAI API key.','err'); return; }
+    if(!hi && !jd){ setStatus('status','Escribe puntos a destacar o pega una vacante.','err'); return; }
+    var model=currentModel();
+    $('genBtn').disabled=true; setStatus('status','Llamando a '+model+'…');
+    var master={ role_en:DATA.role_en, role_es:DATA.role_es, summary_en:DATA.summary_en, summary_es:DATA.summary_es,
+      stack:DATA.stack, ai:DATA.ai,
+      experience:DATA.experience.map(function(j){return {company:j.role, bullets_en:j.bullets_en, bullets_es:j.bullets_es};}) };
+    var sys="You are a resume-tailoring assistant. You get a candidate's MASTER CV data (JSON) and a TARGET (highlight topics and/or a job description). Rewrite ONLY to reprioritize and rephrase EXISTING facts so the CV emphasizes what is relevant to the target. Absolute rule: NEVER invent employers, titles, dates, metrics, or technologies not present in the master. You may reorder, rephrase, merge or drop bullets (keep >=1 per job) and reorder skill lists. Keep bullets concise (<=1.5 lines) and ATS-friendly. Reply in STRICT JSON only.";
+    var usr="MASTER:\n"+JSON.stringify(master)+"\n\nTARGET highlights:\n"+(hi||'(none)')+"\n\nTARGET job description:\n"+(jd||'(none)')+
+      "\n\nReturn JSON with EXACTLY these keys: role_en, role_es (short '// ...' tagline), summary_en, summary_es (tailored), stack (array: reorder/curate MASTER.stack, most relevant first, max 10), ai (array: reorder MASTER.ai, max 8), experience (array of "+DATA.experience.length+" objects, SAME ORDER as MASTER.experience, each { bullets_en:[...], bullets_es:[...] } rephrasing that job's bullets to emphasize the target), note_en, note_es (one short focus line). Keep everything truthful to the master.";
+    if(tonePreset) usr += "\n\nTONE PRESET (steer the emphasis accordingly): " + tonePreset;
+    var body={ model:model, messages:[{role:'system',content:sys},{role:'user',content:usr}], response_format:{type:'json_object'} };
+    if(!/^o\d/i.test(model)) body.temperature=0.4;
+    try{
+      var res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+key}, body:JSON.stringify(body)});
+      if(!res.ok){ var e=await res.text(); throw new Error('HTTP '+res.status+' — '+e.slice(0,180)); }
+      var j=await res.json();
+      var content=j.choices[0].message.content;
+      var parsed=JSON.parse(content);
+      tailored=parsed;
+      updatePreview();
+      setStatus('status','Listo — CV adaptado con '+model+'. Revisa el preview y descarga el PDF.','ok');
+    }catch(err){
+      setStatus('status','Error: '+err.message+'\n(Si es CORS/red, verifica la API key y el modelo. También puedes usar "Ver CV base".)','err');
+    }finally{ $('genBtn').disabled=false; }
+  }
+
+  // ---------- PDF ----------
+  async function makePDFs(){
+    $('pdfBtn').disabled=true; setStatus('pdfStatus','Preparando fuentes…');
+    try{ if(document.fonts && document.fonts.ready) await document.fonts.ready; }catch(e){}
+    var ts=stamp(); var off=$('offscreen'); var jsPDF=window.jspdf.jsPDF;
+    for(var li=0; li<2; li++){
+      var ln = li===0?'en':'es', code = li===0?'EN':'ES';
+      setStatus('pdfStatus','Renderizando '+code+'…');
+      off.innerHTML = renderCV(ln);
+      var pages = off.querySelectorAll('.cv-page');
+      var pdf = new jsPDF({unit:'px', format:[816,1056], compress:true});
+      for(var p=0;p<pages.length;p++){
+        var canvas = await html2canvas(pages[p], {scale:2, backgroundColor:'#ffffff', width:816, height:1056, windowWidth:816, useCORS:true});
+        var img = canvas.toDataURL('image/jpeg', 0.92);
+        if(p>0) pdf.addPage([816,1056],'portrait');
+        pdf.addImage(img,'JPEG',0,0,816,1056);
+      }
+      pdf.save('CV_Francisco_Castellanos_'+code+'_'+ts+'.pdf');
+    }
+    off.innerHTML='';
+    setStatus('pdfStatus','Descargados: CV_..._EN_'+ts+'.pdf y CV_..._ES_'+ts+'.pdf','ok');
+    $('pdfBtn').disabled=false;
+  }
+
+  // ---------- wiring ----------
+  Array.prototype.slice.call(document.querySelectorAll('.preset')).forEach(function(b){
+    b.addEventListener('click', function(){
+      document.querySelectorAll('.preset').forEach(function(x){ x.classList.remove('on'); });
+      b.classList.add('on'); tonePreset = TONE[b.getAttribute('data-tone')] || '';
+    });
+  });
+  var KEYK='cvTailorApiKey';
+  function saveKey(v){ try{ localStorage.setItem(KEYK, v); }catch(e){} $('forgetKey').style.display='inline'; }
+  try{ var sk=localStorage.getItem(KEYK); if(sk){ $('apikey').value=sk; $('remember').checked=true; $('forgetKey').style.display='inline'; } }catch(e){}
+  $('remember').addEventListener('change', function(){ if(this.checked && $('apikey').value){ saveKey($('apikey').value); } else { try{ localStorage.removeItem(KEYK); }catch(e){} $('forgetKey').style.display='none'; } });
+  $('apikey').addEventListener('input', function(){ if($('remember').checked) saveKey(this.value); });
+  $('forgetKey').addEventListener('click', function(){ try{ localStorage.removeItem(KEYK); }catch(e){} $('apikey').value=''; $('remember').checked=false; this.style.display='none'; });
+  $('genBtn').addEventListener('click', generate);
+  $('baseBtn').addEventListener('click', function(){ tailored=null; updatePreview(); setStatus('status','Mostrando CV base (sin IA).','ok'); });
+  $('pdfBtn').addEventListener('click', makePDFs);
+  $('tabEN').addEventListener('click', function(){ lang='en'; this.classList.add('on'); $('tabES').classList.remove('on'); updatePreview(); });
+  $('tabES').addEventListener('click', function(){ lang='es'; this.classList.add('on'); $('tabEN').classList.remove('on'); updatePreview(); });
+  updatePreview(); // base on load
+})();
+</script>
+</body>
+</html>
