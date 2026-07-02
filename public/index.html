@@ -245,17 +245,21 @@
     <div style="position:absolute;inset:0;background-image:linear-gradient(#0f2237 1px,transparent 1px),linear-gradient(90deg,#0f2237 1px,transparent 1px);background-size:34px 34px;opacity:.5;"></div>
     <div style="max-width:1080px;margin:0 auto;padding:70px 36px;position:relative;">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-        <h2 style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:var(--blue);" data-i18n="loop.head">❯ how the agent loop works</h2>
+        <h2 style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:var(--blue);" data-i18n="loop.head">❯ how I actually build</h2>
       </div>
-      <p data-i18n="loop.sub" style="font-size:13.5px;color:#8fb2d6;margin-bottom:34px;max-width:560px;">The core pattern behind my agentic systems: a model reasons, calls a tool, reads the result, and decides the next step — with evals gating every deploy.</p>
+      <p data-i18n="loop.sub" style="font-size:13.5px;color:#8fb2d6;margin-bottom:34px;max-width:600px;">Spec-driven and AI-native: OpenSpec change proposals reviewed before any code, architecture decisions captured as ADRs, and UI/UX designed with AI — then agentic implementation with AI PR review and evals gating every merge.</p>
       <div style="display:flex;align-items:stretch;justify-content:center;gap:0;flex-wrap:wrap;">
-        <div data-node style="background:#0d1e30;border:1px solid var(--blue);border-radius:9px;padding:16px 20px;text-align:center;min-width:130px;transition:box-shadow .3s;"><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--blue);">01</div><div style="font-size:14px;font-weight:600;color:#dcebfa;margin-top:4px;">prompt</div></div>
-        <div style="align-self:center;color:var(--blue);font-family:'JetBrains Mono',monospace;padding:0 14px;">→</div>
-        <div data-node style="background:#0d1e30;border:1px solid var(--blue);border-radius:9px;padding:16px 20px;text-align:center;min-width:130px;transition:box-shadow .3s;"><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--blue);">02</div><div style="font-size:14px;font-weight:600;color:#dcebfa;margin-top:4px;">tool-call</div></div>
-        <div style="align-self:center;color:var(--blue);font-family:'JetBrains Mono',monospace;padding:0 14px;">→</div>
-        <div data-node style="background:#0d1e30;border:1px solid var(--blue);border-radius:9px;padding:16px 20px;text-align:center;min-width:130px;transition:box-shadow .3s;"><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--blue);">03</div><div style="font-size:14px;font-weight:600;color:#dcebfa;margin-top:4px;">result</div></div>
-        <div style="align-self:center;color:var(--blue);font-family:'JetBrains Mono',monospace;padding:0 14px;">↺</div>
-        <div data-node style="background:#0d1e30;border:1px dashed var(--amber);border-radius:9px;padding:16px 20px;text-align:center;min-width:130px;transition:box-shadow .3s;"><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber);">eval</div><div style="font-size:14px;font-weight:600;color:#f6e2c2;margin-top:4px;">gate</div></div>
+        <div data-node style="background:#0d1e30;border:1px solid var(--blue);border-radius:9px;padding:14px 16px;text-align:center;min-width:116px;transition:box-shadow .3s;"><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--blue);">01</div><div style="font-size:14px;font-weight:600;color:#dcebfa;margin-top:4px;">spec</div><div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#5f89b3;margin-top:3px;">OpenSpec</div></div>
+        <div style="align-self:center;color:var(--blue);font-family:'JetBrains Mono',monospace;padding:0 11px;">→</div>
+        <div data-node style="background:#0d1e30;border:1px solid var(--blue);border-radius:9px;padding:14px 16px;text-align:center;min-width:116px;transition:box-shadow .3s;"><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--blue);">02</div><div style="font-size:14px;font-weight:600;color:#dcebfa;margin-top:4px;">ADR</div><div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#5f89b3;margin-top:3px;">decision record</div></div>
+        <div style="align-self:center;color:var(--blue);font-family:'JetBrains Mono',monospace;padding:0 11px;">→</div>
+        <div data-node style="background:#0d1e30;border:1px solid var(--blue);border-radius:9px;padding:14px 16px;text-align:center;min-width:116px;transition:box-shadow .3s;"><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--blue);">03</div><div style="font-size:14px;font-weight:600;color:#dcebfa;margin-top:4px;">design</div><div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#5f89b3;margin-top:3px;">AI UI/UX</div></div>
+        <div style="align-self:center;color:var(--blue);font-family:'JetBrains Mono',monospace;padding:0 11px;">→</div>
+        <div data-node style="background:#0d1e30;border:1px solid var(--blue);border-radius:9px;padding:14px 16px;text-align:center;min-width:116px;transition:box-shadow .3s;"><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--blue);">04</div><div style="font-size:14px;font-weight:600;color:#dcebfa;margin-top:4px;">build</div><div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#5f89b3;margin-top:3px;">agentic</div></div>
+        <div style="align-self:center;color:var(--amber);font-family:'JetBrains Mono',monospace;padding:0 11px;">↺</div>
+        <div data-node style="background:#0d1e30;border:1px dashed var(--amber);border-radius:9px;padding:14px 16px;text-align:center;min-width:116px;transition:box-shadow .3s;"><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber);">05</div><div style="font-size:14px;font-weight:600;color:#f6e2c2;margin-top:4px;">review</div><div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#c99a52;margin-top:3px;">AI PR + evals</div></div>
+        <div style="align-self:center;color:var(--blue);font-family:'JetBrains Mono',monospace;padding:0 11px;">→</div>
+        <div data-node style="background:#0d1e30;border:1px solid var(--blue);border-radius:9px;padding:14px 16px;text-align:center;min-width:116px;transition:box-shadow .3s;"><div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--blue);">06</div><div style="font-size:14px;font-weight:600;color:#dcebfa;margin-top:4px;">ship</div><div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#5f89b3;margin-top:3px;">deploy</div></div>
       </div>
     </div>
   </section>
@@ -366,7 +370,7 @@ document.addEventListener('DOMContentLoaded', function(){
       'hero.cta1': 'view projects', 'hero.cta2': 'download cv', 'hero.cta3': 'contact',
       'about.p1': "I started in process engineering — mapping how real systems actually work — and moved into software to build them. Today I design and ship full-stack platforms and agentic AI systems in production.",
       'about.p2': "That path shows up in how I work: I care about the whole loop, from cloud infrastructure to the interface a human touches — and lately, to the tools an agent calls. Ten-plus years across consulting, engineering and AI, with a bias for ownership and small teams.",
-      'loop.sub': "The core pattern behind my agentic systems: a model reasons, calls a tool, reads the result, and decides the next step — with evals gating every deploy.",
+      'loop.sub': "Spec-driven and AI-native: OpenSpec change proposals reviewed before any code, architecture decisions captured as ADRs, and UI/UX designed with AI — then agentic implementation with AI PR review and evals gating every merge.",
       'contact.head': "Let's build something that ships.",
       'contact.sub': "Open to senior full-stack & agentic engineering roles. Say hi below.",
       'contact.form.hint': "// leave your email and a message — hit enter to send",
@@ -398,14 +402,14 @@ document.addEventListener('DOMContentLoaded', function(){
       'proj8.desc': "Public-outreach sites defending the Chirimoyo wetland in Veracruz, with a resident/migratory bird catalog. Next.js + Flask + Firestore on Cloud Run.",
       'proj9.desc': "A reading/film-club platform with a paid virtual club. Next.js + Flask + Firestore on GCP, Stripe/MercadoPago payments, and an AI agent service that drafts social content.",
       'sk.core': '❯ core stack', 'sk.ai': '❯ ai / agentic', 'sk.data': '❯ data & devops', 'sk.cert': '❯ certifications',
-      'loop.head': '❯ how the agent loop works',
+      'loop.head': '❯ how I actually build',
     },
     es: {
       'hero.tag': "Construyo plataformas en producción y sistemas de IA agentic — marketplaces multi-tenant en AWS con front-ends React/Angular, back-ends Java y C#/.NET, y LLMs integrados en el producto y el flujo de desarrollo.",
       'hero.cta1': 'ver proyectos', 'hero.cta2': 'descargar cv', 'hero.cta3': 'contacto',
       'about.p1': "Empecé en ingeniería de procesos — mapeando cómo funcionan de verdad los sistemas — y me pasé al software para construirlos. Hoy diseño y despliego plataformas full-stack y sistemas de IA agentic en producción.",
       'about.p2': "Ese camino se nota en cómo trabajo: me importa el loop completo, desde la infraestructura cloud hasta la interfaz que toca una persona — y últimamente, las herramientas que llama un agente. Más de diez años entre consultoría, ingeniería e IA, con sesgo por el ownership y los equipos pequeños.",
-      'loop.sub': "El patrón base de mis sistemas agentic: el modelo razona, llama una herramienta, lee el resultado y decide el siguiente paso — con evals que controlan cada despliegue.",
+      'loop.sub': "Spec-driven y AI-native: propuestas de cambio con OpenSpec revisadas antes de escribir código, decisiones de arquitectura registradas como ADRs, y UI/UX diseñada con IA — luego implementación agentic con revisión de PRs por IA y evals que controlan cada merge.",
       'contact.head': "Construyamos algo que llegue a producción.",
       'contact.sub': "Abierto a roles senior de full-stack & agentic engineering. Salúdame abajo.",
       'contact.form.hint': "// deja tu email y un mensaje — presiona enter para enviar",
@@ -437,7 +441,7 @@ document.addEventListener('DOMContentLoaded', function(){
       'proj8.desc': "Sitios de difusión pública en defensa del humedal Chirimoyo en Veracruz, con un catálogo de aves residentes/migratorias. Next.js + Flask + Firestore en Cloud Run.",
       'proj9.desc': "Una plataforma de club de lectura/cine con un club virtual de paga. Next.js + Flask + Firestore en GCP, pagos con Stripe/MercadoPago y un servicio de agente IA que redacta contenido social.",
       'sk.core': '❯ stack principal', 'sk.ai': '❯ ia / agentic', 'sk.data': '❯ datos & devops', 'sk.cert': '❯ certificaciones',
-      'loop.head': '❯ cómo funciona el loop del agente',
+      'loop.head': '❯ cómo construyo de verdad',
     }
   };
   var lang = 'en';
