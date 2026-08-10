@@ -602,17 +602,27 @@ document.addEventListener('DOMContentLoaded', function(){
     { label: 'switch language', hint: '--lang', run: function(){ lang = lang === 'en' ? 'es' : 'en'; applyLang(); } },
     { label: 'toggle theme', hint: '◐', run: function(){ q('[data-theme-toggle]').click(); } },
   ];
-  var sel = 0, filtered = cmds.slice();
+  var sel = 0, filtered = cmds.slice(), palRows = [];
+  // Only repaints the highlight. Rebuilding the rows here would detach the node
+  // under the cursor on hover, so mousedown/mouseup never land on the same
+  // element and the click event is never produced.
+  function highlightPal(){
+    palRows.forEach(function(row, i){ row.style.background = i === sel ? 'var(--tint)' : 'transparent'; });
+    if (palRows[sel]) palRows[sel].scrollIntoView({ block: 'nearest' });
+  }
   function renderPal(){
     palList.innerHTML = '';
+    palRows = [];
     filtered.forEach(function(c, i){
       var row = document.createElement('div');
-      row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:7px;cursor:pointer;font-family:\'JetBrains Mono\',monospace;font-size:13px;color:var(--text);background:' + (i === sel ? 'var(--tint)' : 'transparent') + ';';
+      row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:7px;cursor:pointer;font-family:\'JetBrains Mono\',monospace;font-size:13px;color:var(--text);background:transparent;';
       row.innerHTML = '<span><span style="color:var(--acc)">❯</span> ' + c.label + '</span><span style="color:var(--dim);font-size:11px">' + c.hint + '</span>';
-      row.addEventListener('mouseenter', function(){ sel = i; renderPal(); });
+      row.addEventListener('mouseenter', function(){ sel = i; highlightPal(); });
       row.addEventListener('click', function(){ closePal(); c.run(); });
+      palRows.push(row);
       palList.appendChild(row);
     });
+    highlightPal();
   }
   function openPal(){ pal.style.display = 'flex'; palIn.value = ''; filtered = cmds.slice(); sel = 0; renderPal(); setTimeout(function(){ palIn.focus(); }, 30); }
   function closePal(){ pal.style.display = 'none'; }
@@ -620,8 +630,8 @@ document.addEventListener('DOMContentLoaded', function(){
   pal.addEventListener('click', function(e){ if (e.target === pal) closePal(); });
   palIn.addEventListener('input', function(){ var v = palIn.value.toLowerCase(); filtered = cmds.filter(function(c){ return c.label.indexOf(v) !== -1; }); sel = 0; renderPal(); });
   palIn.addEventListener('keydown', function(e){
-    if (e.key === 'ArrowDown'){ e.preventDefault(); sel = Math.min(sel + 1, filtered.length - 1); renderPal(); }
-    else if (e.key === 'ArrowUp'){ e.preventDefault(); sel = Math.max(sel - 1, 0); renderPal(); }
+    if (e.key === 'ArrowDown'){ e.preventDefault(); sel = Math.min(sel + 1, filtered.length - 1); highlightPal(); }
+    else if (e.key === 'ArrowUp'){ e.preventDefault(); sel = Math.max(sel - 1, 0); highlightPal(); }
     else if (e.key === 'Enter'){ e.preventDefault(); if (filtered[sel]){ closePal(); filtered[sel].run(); } }
     else if (e.key === 'Escape'){ closePal(); }
   });
