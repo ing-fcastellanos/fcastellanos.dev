@@ -464,15 +464,15 @@ document.addEventListener('DOMContentLoaded', function(){
       'loop.n6.tip': "Los merges despliegan a producción automáticamente vía CI/CD sin llaves.",
     }
   };
+  // Always start in English on every visit; the toggle switches for the session only.
   var lang = 'en';
-  try { lang = localStorage.getItem('lang') || 'en'; } catch(e){}
+  try { localStorage.removeItem('lang'); } catch(e){}
   function applyLang(){
     qa('[data-i18n]').forEach(function(el){ var k = el.getAttribute('data-i18n'); if (i18n[lang][k] != null) el.textContent = i18n[lang][k]; });
     var b = q('[data-lang-toggle]'); if (b) b.textContent = '--lang ' + (lang === 'en' ? 'es' : 'en');
     var cv = q('[data-cv]'); if (cv) cv.setAttribute('href', 'Francisco_Castellanos_CV_' + (lang === 'es' ? 'ES' : 'EN') + '.pdf');
     document.documentElement.lang = lang;
     if (typeof setFilter === 'function') setFilter(currentFilter || 'all');
-    try { localStorage.setItem('lang', lang); } catch(e){}
   }
   q('[data-lang-toggle]').addEventListener('click', function(){ lang = lang === 'en' ? 'es' : 'en'; applyLang(); });
 
