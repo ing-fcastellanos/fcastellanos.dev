@@ -59,6 +59,17 @@ input[type=password],.mono-in{font-family:var(--mono);font-size:12.5px}
 .remember input{width:auto;accent-color:#2FB380}
 .remember a{margin-left:auto;font-size:11px;color:var(--acc);cursor:pointer}
 
+/* Custom cursor: white dot + trailing ring in difference blend mode, so it
+   self-inverts over any background. Native cursor is hidden only when the JS
+   actually initializes it (fine pointer + no reduced motion). */
+@media(hover:hover) and (pointer:fine){html.has-cursor,html.has-cursor *{cursor:none!important}}
+.fc-cursor{position:fixed;top:0;left:0;z-index:9999;pointer-events:none;mix-blend-mode:difference;transition:opacity .25s ease}
+.fc-cursor.is-hidden{opacity:0}
+.fc-cursor__dot,.fc-cursor__ring{position:fixed;top:0;left:0;border-radius:50%;pointer-events:none;will-change:transform}
+.fc-cursor__dot{width:6px;height:6px;background:#fff}
+.fc-cursor__ring{width:36px;height:36px;border:1.5px solid #fff;background:transparent;transition:background-color .25s cubic-bezier(.25,1,.5,1),border-color .25s cubic-bezier(.25,1,.5,1)}
+.fc-cursor__ring.is-active{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.55)}
+
 /* ---------- CV TEMPLATE (scoped cv-*) ---------- */
 .cv-page{width:816px;height:1056px;background:#fff;display:flex;color:#1a1f26;font-family:var(--sans);margin-bottom:18px;overflow:hidden}
 .cv-page:last-child{margin-bottom:0}
@@ -459,6 +470,40 @@ const DATA = {
   $('tabEN').addEventListener('click', function(){ lang='en'; this.classList.add('on'); $('tabES').classList.remove('on'); updatePreview(); });
   $('tabES').addEventListener('click', function(){ lang='es'; this.classList.add('on'); $('tabEN').classList.remove('on'); updatePreview(); });
   updatePreview(); // base on load
+
+  // ---------- custom cursor ----------
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var finePointer = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (!reduced && finePointer) {
+    var cur = document.createElement('div');
+    cur.className = 'fc-cursor is-hidden';
+    cur.innerHTML = '<span class="fc-cursor__dot"></span><span class="fc-cursor__ring"></span>';
+    document.body.appendChild(cur);
+    document.documentElement.classList.add('has-cursor');
+    var curDot = cur.querySelector('.fc-cursor__dot'), curRing = cur.querySelector('.fc-cursor__ring');
+    var mx = window.innerWidth / 2, my = window.innerHeight / 2;
+    var cdx = mx, cdy = my, crx = mx, cry = my;      // dot follows fast, ring lags behind
+    var curScale = 1, curHover = false, curDown = false, curSeen = false;
+    (function curFrame(){
+      cdx += (mx - cdx) * .55; cdy += (my - cdy) * .55;
+      crx += (mx - crx) * .18; cry += (my - cry) * .18;
+      curScale += ((curHover ? 2.2 : 1) * (curDown ? .65 : 1) - curScale) * .2;
+      curDot.style.transform = 'translate(' + cdx + 'px,' + cdy + 'px) translate(-50%,-50%)';
+      curRing.style.transform = 'translate(' + crx + 'px,' + cry + 'px) translate(-50%,-50%) scale(' + curScale.toFixed(3) + ')';
+      requestAnimationFrame(curFrame);
+    })();
+    window.addEventListener('mousemove', function(e){
+      mx = e.clientX; my = e.clientY;
+      if (!curSeen) { curSeen = true; cdx = crx = mx; cdy = cry = my; cur.classList.remove('is-hidden'); }
+    }, { passive: true });
+    var HOT = 'a, button, input, textarea, select, label';
+    document.addEventListener('pointerover', function(e){ if (e.target.closest && e.target.closest(HOT)) { curHover = true; curRing.classList.add('is-active'); } });
+    document.addEventListener('pointerout', function(e){ if (e.target.closest && e.target.closest(HOT)) { curHover = false; curRing.classList.remove('is-active'); } });
+    document.addEventListener('mousedown', function(){ curDown = true; });
+    document.addEventListener('mouseup', function(){ curDown = false; });
+    document.addEventListener('mouseleave', function(){ cur.classList.add('is-hidden'); });
+    document.addEventListener('mouseenter', function(){ if (curSeen) cur.classList.remove('is-hidden'); });
+  }
 })();
 </script>
 </body>
